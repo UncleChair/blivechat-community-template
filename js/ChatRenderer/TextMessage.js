@@ -81,9 +81,8 @@ function(constants, ImgShadow, AuthorMedal, AuthorBadge) {
     name: 'TextMessage',
     data() {
       return {
-        CONTENT_TYPE_TEXT: constants.CONTENT_TYPE_TEXT,
-        CONTENT_TYPE_IMAGE: constants.CONTENT_TYPE_IMAGE,
-        CONTENT_TYPE_EMOTICON: constants.CONTENT_TYPE_EMOTICON
+        CONTENT_PART_TYPE_TEXT: constants.CONTENT_PART_TYPE_TEXT,
+        CONTENT_PART_TYPE_IMAGE: constants.CONTENT_PART_TYPE_IMAGE,
       }
     },
     components: {

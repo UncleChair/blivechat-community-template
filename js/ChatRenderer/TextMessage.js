@@ -34,7 +34,7 @@ function(constants, ImgShadow, AuthorMedal, AuthorBadge) {
     :is-owner="authorType === 3"
     :is-deleted="isDelete"
     >
-    <div id="card" class="style-scope yt-live-chat-text-message-renderer" :style="{'--text-color': textColor}">
+    <div id="card" class="style-scope yt-live-chat-text-message-renderer">
       <img-shadow id="author-photo" height="24" width="24" class="style-scope yt-live-chat-text-message-renderer"
         :imgUrl="avatarUrl"
       ></img-shadow>

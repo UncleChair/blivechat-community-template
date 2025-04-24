@@ -23,6 +23,56 @@ function(blcsdk, constants, ImgShadow, MembershipItem, PaidMessage) {
   const exports = {}
   exports.default = {
     template: `
+  <yt-live-chat-ticker-renderer :hidden="showMessages.length === 0">
+    <div id="container" dir="ltr" class="style-scope yt-live-chat-ticker-renderer">
+      <transition-group tag="div" :css="false" @enter="onTickerItemEnter" @leave="onTickerItemLeave"
+        id="items" class="style-scope yt-live-chat-ticker-renderer"
+      >
+        <yt-live-chat-ticker-paid-message-item-renderer v-for="message in showMessages" :key="message.raw.id"
+          tabindex="0" class="style-scope yt-live-chat-ticker-renderer" style="overflow: hidden;"
+          @click="onItemClick(message.raw)"
+          :privilegeType="message.raw.type == MESSAGE_TYPE_MEMBER ? message.raw.privilegeType : ''"
+          :type="message.raw.type"
+          :price="message.raw.price"
+          :giftName="message.raw.giftName"
+          :style="{
+            '--yt-live-chat-ticker-item-primary-color': message.bgColor.primaryColor,
+            '--yt-live-chat-ticker-item-secondary-color': message.bgColor.secondaryColor
+          }"
+        >
+          <div id="container" dir="ltr" class="style-scope yt-live-chat-ticker-paid-message-item-renderer" :style="{
+            background: message.formatBgColor,
+          }">
+            <div id="content" :type="message.raw.type === MESSAGE_TYPE_MEMBER ? MESSAGE_TYPE_MEMBER : MESSAGE_TYPE_SUPER_CHAT" class="style-scope yt-live-chat-ticker-paid-message-item-renderer" :style="{
+              color: message.color
+            }">
+              <img-shadow id="author-photo" height="24" width="24" class="style-scope yt-live-chat-ticker-paid-message-item-renderer"
+                :imgUrl="message.raw.avatarUrl"
+              ></img-shadow>
+              <span id="text" dir="ltr" class="style-scope yt-live-chat-ticker-paid-message-item-renderer" v-if="message.raw.giftName !== undefined">{{
+                message.raw.giftName +"x"+ message.raw.num
+              }}</span>
+              <span  id="text" dir="ltr" class="style-scope yt-live-chat-ticker-paid-message-item-renderer" v-if="message.raw.giftName == undefined">{{
+                message.text
+              }}</span>
+            </div>
+          </div>
+        </yt-live-chat-ticker-paid-message-item-renderer>
+      </transition-group>
+    </div>
+    <template v-if="pinnedMessage">
+      <membership-item :key="pinnedMessage.id" v-if="pinnedMessage.type === MESSAGE_TYPE_MEMBER"
+        class="style-scope yt-live-chat-ticker-renderer"
+        :avatarUrl="pinnedMessage.avatarUrl" :authorName="getShowAuthorName(pinnedMessage)" :privilegeType="pinnedMessage.privilegeType"
+        :title="pinnedMessage.title" :time="pinnedMessage.time"
+      ></membership-item>
+      <paid-message :key="pinnedMessage.id" v-else
+        class="style-scope yt-live-chat-ticker-renderer"
+        :price="pinnedMessage.price" :avatarUrl="pinnedMessage.avatarUrl" :authorName="getShowAuthorName(pinnedMessage)"
+        :time="pinnedMessage.time" :content="pinnedMessageShowContent"
+      ></paid-message>
+    </template>
+  </yt-live-chat-ticker-renderer>
     `,
     name: 'Ticker',
     components: {
@@ -40,6 +90,8 @@ function(blcsdk, constants, ImgShadow, MembershipItem, PaidMessage) {
     data() {
       return {
         MESSAGE_TYPE_MEMBER: constants.MESSAGE_TYPE_MEMBER,
+        MESSAGE_TYPE_SUPER_CHAT: constants.MESSAGE_TYPE_SUPER_CHAT,
+        MESSAGE_TYPE_GIFT: constants.MESSAGE_TYPE_GIFT,
         curTime: new Date(),
         updateTimerId: window.setInterval(this.updateProgress, 1000),
         pinnedMessage: null

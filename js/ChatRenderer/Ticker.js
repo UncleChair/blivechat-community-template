@@ -1,5 +1,5 @@
 (function(root, factory) {
-  root.chatRendererTextMessage = factory(
+  root.chatRendererTicker = factory(
     root.blcsdk,
     root.chatRendererConstants,
     root.chatRendererImgShadow.default,
@@ -34,7 +34,7 @@ function(blcsdk, constants, ImgShadow, MembershipItem, PaidMessage) {
       messages: Array,
       showGiftName: {
         type: Boolean,
-        default: blcsdk.getConfig().showGiftName
+        default: this.showGiftName
       }
     },
     data() {

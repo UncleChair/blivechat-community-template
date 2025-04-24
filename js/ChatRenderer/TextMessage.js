@@ -99,10 +99,9 @@ function(constants, ImgShadow, AuthorMedal, AuthorBadge) {
       medalLevel: Number,
       isFanGroup: Boolean,
       isDelete: Boolean,
-      emoticon: String,
       contentParts: Array,
       privilegeType: Number,
-      repeated: Number
+      repeated: Number,
     },
     computed: {
       timeText() {

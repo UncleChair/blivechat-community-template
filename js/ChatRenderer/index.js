@@ -45,7 +45,7 @@ function(_, constants, TextMessage, PaidMessage, MembershipItem, Ticker, Interac
   <yt-live-chat-renderer class="style-scope yt-live-chat-app" style="--scrollbar-width:11px;" hide-timestamps
     @mousemove="refreshCantScrollStartTime"
   >
-    <ticker class="style-scope yt-live-chat-renderer" :messages="paidMessages" :showGiftInfo="showGiftInfo"></ticker>
+    <ticker class="style-scope yt-live-chat-renderer" :messages="paidMessages" :showGiftInfo="showGiftName"></ticker>
     <yt-live-chat-item-list-renderer class="style-scope yt-live-chat-renderer" allow-scroll>
       <div ref="scroller" id="item-scroller" class="style-scope yt-live-chat-item-list-renderer animated" @scroll="onScroll">
         <div ref="itemOffset" id="item-offset" class="style-scope yt-live-chat-item-list-renderer">
@@ -138,7 +138,7 @@ function(_, constants, TextMessage, PaidMessage, MembershipItem, Ticker, Interac
       PaidMessage
     },
     props: {
-      showGiftInfo: {
+      showGiftName: {
         type: Boolean,
       },
       minGiftPrice: {
@@ -262,7 +262,7 @@ function(_, constants, TextMessage, PaidMessage, MembershipItem, Ticker, Interac
         }, 100)
       },
       getGiftShowContent(message) {
-        return constants.getGiftShowContent(message, this.showGiftInfo)
+        return constants.getGiftShowContent(message, this.showGiftName)
       },
       getGiftShowNameAndNum: constants.getGiftShowNameAndNum,
       getShowContent: constants.getShowContent,
@@ -469,6 +469,9 @@ function(_, constants, TextMessage, PaidMessage, MembershipItem, Ticker, Interac
         // 添加一个本地时间给Ticker用，防止本地时间和服务器时间相差很大的情况
         message.addTime = new Date()
 
+        if (message.type === constants.MESSAGE_TYPE_GIFT) {
+          console.log(message)
+        }
         if (message.type !== constants.MESSAGE_TYPE_TEXT) {
           this.paidMessages.unshift(_.cloneDeep(message))
           const MAX_PAID_MESSAGE_NUM = 100

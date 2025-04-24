@@ -53,6 +53,3 @@ export default {
   }
 }
 </script>
-
-<style src="@/assets/css/youtube/yt-live-chat-author-badge-renderer.css"></style>
-<style src="@/assets/css/youtube/yt-icon.css"></style>

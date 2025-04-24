@@ -244,5 +244,3 @@ yt-live-chat-text-message-renderer>#content .el-badge .el-badge__content {
 }
 
 </style>
-
-<style src="@/assets/css/youtube/yt-live-chat-text-message-renderer.css"></style>

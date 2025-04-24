@@ -33,5 +33,3 @@ export default {
   }
 }
 </script>
-
-<style src="@/assets/css/youtube/yt-img-shadow.css"></style>

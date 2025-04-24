@@ -31,5 +31,3 @@ export default {
   }
 }
 </script>
-
-<style src="@/assets/css/youtube/yt-live-chat-author-medal-renderer.css"></style>

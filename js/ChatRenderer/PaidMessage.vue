@@ -65,5 +65,3 @@ export default {
   }
 }
 </script>
-
-<style src="@/assets/css/youtube/yt-live-chat-paid-message-renderer.css"></style>

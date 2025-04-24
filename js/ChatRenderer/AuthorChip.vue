@@ -50,5 +50,3 @@ export default {
   }
 }
 </script>
-
-<style src="@/assets/css/youtube/yt-live-chat-author-chip.css"></style>

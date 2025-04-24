@@ -50,5 +50,3 @@ export default {
   }
 }
 </script>
-
-<style src="@/assets/css/youtube/yt-live-chat-membership-item-renderer.css"></style>

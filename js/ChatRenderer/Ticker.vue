@@ -234,6 +234,3 @@ export default {
   }
 }
 </script>
-
-<style src="@/assets/css/youtube/yt-live-chat-ticker-renderer.css"></style>
-<style src="@/assets/css/youtube/yt-live-chat-ticker-paid-message-item-renderer.css"></style>

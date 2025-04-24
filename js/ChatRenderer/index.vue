@@ -870,7 +870,3 @@ export default {
   }
 }
 </script>
-
-<style src="@/assets/css/youtube/yt-html.css"></style>
-<style src="@/assets/css/youtube/yt-live-chat-renderer.css"></style>
-<style src="@/assets/css/youtube/yt-live-chat-item-list-renderer.css"></style>

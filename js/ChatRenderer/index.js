@@ -72,7 +72,6 @@ function(_, constants, TextMessage, PaidMessage, MembershipItem, Ticker, Interac
                 ></interact-message>
                 <text-message :key="message.id" v-else-if="message.type === MESSAGE_TYPE_TEXT"
                   class="style-scope yt-live-chat-item-list-renderer"
-                  :textColor="message.textColor"
                   :time="message.time"
                   :avatarUrl="message.avatarUrl"
                   :authorName="message.authorName"
@@ -469,7 +468,7 @@ function(_, constants, TextMessage, PaidMessage, MembershipItem, Ticker, Interac
         // 添加一个本地时间给Ticker用，防止本地时间和服务器时间相差很大的情况
         message.addTime = new Date()
 
-        if (message.type === constants.MESSAGE_TYPE_GIFT) {
+        if (message.type === constants.MESSAGE_TYPE_TEXT) {
           console.log(message)
         }
         if (message.type !== constants.MESSAGE_TYPE_TEXT) {

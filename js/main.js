@@ -28,6 +28,8 @@ function(blcsdk, constants, ChatRenderer) {
       let cfg = blcsdk.getConfig()
       this.config.maxNumber = cfg.maxNumber
       this.config.showGiftName = cfg.showGiftName
+      this.config.mergeGift = cfg.mergeGift
+      this.config.mergeSimilarDanmaku = cfg.mergeSimilarDanmaku
     },
     methods: {
       addMsg(msg) {

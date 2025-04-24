@@ -26,11 +26,110 @@
 function(_, constants, TextMessage, PaidMessage, MembershipItem, Ticker, InteractMessage ) {
   const exports = {}
 
+  const NEED_SMOOTH_MESSAGE_TYPES = [
+    // constants.MESSAGE_TYPE_INTERACT,
+    constants.MESSAGE_TYPE_TEXT,
+    constants.MESSAGE_TYPE_GIFT,
+    constants.MESSAGE_TYPE_MEMBER,
+    constants.MESSAGE_TYPE_SUPER_CHAT
+  ]
+  // 发送消息时间间隔范围
+  const MESSAGE_MIN_INTERVAL = 80
+  const MESSAGE_MAX_INTERVAL = 1000
+
   const CHAT_SMOOTH_ANIMATION_TIME_MS = 84
+  const SCROLLED_TO_BOTTOM_EPSILON = 15
 
   exports.default = {
     template: `
-    `,name: 'ChatRenderer',
+  <yt-live-chat-renderer class="style-scope yt-live-chat-app" style="--scrollbar-width:11px;" hide-timestamps
+    @mousemove="refreshCantScrollStartTime"
+  >
+    <ticker class="style-scope yt-live-chat-renderer" :messages="paidMessages" :showGiftInfo="showGiftInfo"></ticker>
+    <yt-live-chat-item-list-renderer class="style-scope yt-live-chat-renderer" allow-scroll>
+      <div ref="scroller" id="item-scroller" class="style-scope yt-live-chat-item-list-renderer animated" @scroll="onScroll">
+        <div ref="itemOffset" id="item-offset" class="style-scope yt-live-chat-item-list-renderer">
+          <div ref="items" id="items" class="style-scope yt-live-chat-item-list-renderer" style=""
+            :style="{ transform: \`translateY(\${Math.floor(scrollPixelsRemaining)}px)\` }">
+            <transition-group tag="div" :css="false" @leave="onMessageLeave"
+              id="chat-items" class="style-scope yt-live-chat-item-list-renderer"
+            >
+              <template v-for="message in messages">
+                <interact-message :key="message.id" v-if="message.type === MESSAGE_TYPE_INTERACT"
+                  class="style-scope yt-live-chat-item-list-renderer"
+                  :time="message.time"
+                  :avatarUrl="message.avatarUrl"
+                  :authorName="message.authorName"
+
+                  :medalName="message.medalName"
+                  :medalLevel="message.medalLevel"
+                  :isFanGroup="message.isFanGroup"
+
+                  :privilegeType="message.privilegeType"
+                  :msgType="message.msgType"
+
+                  :isDelete="message.isDelete"
+                ></interact-message>
+                <text-message :key="message.id" v-else-if="message.type === MESSAGE_TYPE_TEXT"
+                  class="style-scope yt-live-chat-item-list-renderer"
+                  :textColor="message.textColor"
+                  :time="message.time"
+                  :avatarUrl="message.avatarUrl"
+                  :authorName="message.authorName"
+                  :authorType="message.authorType"
+                  
+                  :privilegeType="message.privilegeType"
+                  :repeated="message.repeated"
+                  :repeatedThread="message.repeatedThread"
+                  :threadLength="message.threadLength"
+                  :medalName="message.medalName"
+                  :medalLevel="message.medalLevel"
+                  :isFanGroup="message.isFanGroup"
+                  :isDelete="message.isDelete"
+                  
+                  :contentParts="getShowContentParts(message)"
+                ></text-message>
+                <paid-message :key="message.id" v-else-if="message.type === MESSAGE_TYPE_GIFT"
+                  class="style-scope yt-live-chat-item-list-renderer"
+                  :time="message.time"
+                  :avatarUrl="message.avatarUrl"
+                  :authorName="getShowAuthorName(message)"
+                  :price="message.price"
+                  :content="getGiftShowContent(message)"
+                  :giftName="message.giftName"
+                  :isDelete="message.isDelete"
+                ></paid-message>
+                <membership-item :key="message.id" v-else-if="message.type === MESSAGE_TYPE_MEMBER"
+                  class="style-scope yt-live-chat-item-list-renderer"
+                  :time="message.time"
+                  :avatarUrl="message.avatarUrl"
+                  :authorName="getShowAuthorName(message)"
+                  :price="message.price"
+                  :guardNum="message.guardNum"
+                  :guardUnit="message.guardUnit"
+                  :privilegeType="message.privilegeType"
+                  :title="message.title"
+                  :isDelete="message.isDelete"
+                ></membership-item>
+                <paid-message :key="message.id" v-else-if="message.type === MESSAGE_TYPE_SUPER_CHAT"
+                  class="style-scope yt-live-chat-item-list-renderer"
+                  giftName="superchat"
+                  :time="message.time"
+                  :avatarUrl="message.avatarUrl"
+                  :authorName="getShowAuthorName(message)"
+                  :price="message.price"
+                  :content="getShowContent(message)"
+                  :isDelete="message.isDelete"
+                ></paid-message>
+              </template>
+            </transition-group>
+          </div>
+        </div>
+      </div>
+    </yt-live-chat-item-list-renderer>
+  </yt-live-chat-renderer>
+    `,
+    name: 'ChatRenderer',
     components: {
       Ticker,
       InteractMessage,
@@ -39,66 +138,28 @@ function(_, constants, TextMessage, PaidMessage, MembershipItem, Ticker, Interac
       PaidMessage
     },
     props: {
-      customCss: {
-        type: String,
-        default: chatConfig.DEFAULT_CONFIG.customCss
-      },
       showGiftInfo: {
         type: Boolean,
-        default: chatConfig.DEFAULT_CONFIG.showGiftInfo
-      },
-      danmakuAtBottom: {
-        type: Boolean,
-        default: chatConfig.DEFAULT_CONFIG.danmakuAtBottom
-      },
-      tickerAtButtom: {
-        type: Boolean,
-        default: chatConfig.DEFAULT_CONFIG.tickerAtButtom
-      },
-      randomXOffset: {
-        type: Boolean,
-        default: chatConfig.DEFAULT_CONFIG.randomXOffset
-      },
-      randomYOffset: {
-        type: Boolean,
-        default: chatConfig.DEFAULT_CONFIG.randomYOffset
-      },
-      floatTime: {
-        type: Number,
-        default: chatConfig.DEFAULT_CONFIG.floatTime
-      },
-      mergeSameUserDanmaku: {
-        type: Boolean,
-        default: chatConfig.DEFAULT_CONFIG.mergeSameUserDanmaku
-      },
-      mergeSameUserDanmakuInterval: {
-        type: Number,
-        default: chatConfig.DEFAULT_CONFIG.mergeSameUserDanmakuInterval
       },
       minGiftPrice: {
         type: Number,
-        default: chatConfig.DEFAULT_CONFIG.minGiftPrice
       },
       minTickerPrice: {
         type: Number,
-        default: chatConfig.DEFAULT_CONFIG.minTickerPrice
       },
       maxNumber: {
         type: Number,
-        default: chatConfig.DEFAULT_CONFIG.maxNumber
       },
       pinTime: {
         type: Number,
-        default: chatConfig.DEFAULT_CONFIG.pinTime
       },
       fadeOutNum: {
         type: Number,
-        default: chatConfig.DEFAULT_CONFIG.fadeOutNum
       }
     },
     data() {
       return {
-        // MESSAGE_TYPE_INTERACT: constants.MESSAGE_TYPE_INTERACT,
+        MESSAGE_TYPE_INTERACT: null,
         MESSAGE_TYPE_TEXT: constants.MESSAGE_TYPE_TEXT,
         MESSAGE_TYPE_GIFT: constants.MESSAGE_TYPE_GIFT,
         MESSAGE_TYPE_MEMBER: constants.MESSAGE_TYPE_MEMBER,
@@ -131,9 +192,6 @@ function(_, constants, TextMessage, PaidMessage, MembershipItem, Ticker, Interac
       }
     },
     computed: {
-      getFloatTime() {
-        return this.floatTime
-      },
       canScrollToBottom() {
         return this.atBottom/* || this.allowScroll */
       }
@@ -141,9 +199,6 @@ function(_, constants, TextMessage, PaidMessage, MembershipItem, Ticker, Interac
     watch: {
       canScrollToBottom(val) {
         this.cantScrollStartTime = val ? null : new Date()
-      },
-      customCss() {
-        this.setCustomCss()
       },
     },
     mounted() {
@@ -209,99 +264,16 @@ function(_, constants, TextMessage, PaidMessage, MembershipItem, Ticker, Interac
       getGiftShowContent(message) {
         return constants.getGiftShowContent(message, this.showGiftInfo)
       },
+      getGiftShowNameAndNum: constants.getGiftShowNameAndNum,
       getShowContent: constants.getShowContent,
-      getShowRichContent: constants.getShowRichContent,
-      getShowRichContentThread: constants.getShowRichContentThread,
+      getShowContentParts: constants.getShowContentParts,
       getShowAuthorName: constants.getShowAuthorName,
-      
-  
+
       addMessage(message) {
         this.addMessages([message])
       },
       addMessages(messages) {
         this.enqueueMessages(messages)
-      },
-      mergeSimilarText(content) {
-        content = content.trim().toLowerCase()
-        let res = false
-        // console.log(`判断: ${content} 是否重复`)
-        this.forEachRecentMessage(5, message => {
-          if (message.type !== constants.MESSAGE_TYPE_TEXT) {
-            return true
-          }
-          let index = 0
-          for (let innerContent of message.contents) {
-            // console.log(`判断index:${index}: ${innerContent}`)
-            
-            let messageContent = innerContent.trim().toLowerCase()
-            let longer, shorter
-            if (messageContent.length > content.length) {
-              longer = messageContent
-              shorter = content
-            } else {
-              longer = content
-              shorter = messageContent
-            }
-            if (longer.indexOf(shorter) !== -1 // 长的包含短的
-                && longer.length - shorter.length < shorter.length // 长度差较小
-            ) {
-              // 其实有小概率导致弹幕卡住
-              
-              message.repeatedThread[index]++
-              message.repeated++
-  
-              // console.log(`匹配到重复子串`)
-              res = true
-              return false
-            }
-            index++
-          }
-          return true
-        })
-        return res
-      },
-      mergeSameUserText(newContent, newRichContent, authorName, time) {
-        let res = false
-        // 遍历最新消息，看是不是同一个用户发送的
-        this.forEachRecentMessage(1, message => {
-          if (message.type !== constants.MESSAGE_TYPE_TEXT || message.authorName !== authorName) {
-            return true
-          } else {
-            // 如果新消息的时间间隔上一条消息超过 mergeSameUserDanmakuInterval 秒，则不合并
-            if (new Date(time * 1000) - message.time > this.mergeSameUserDanmakuInterval * 1000) {
-              return true
-            }
-            // FIXME: 翻译bug
-            // 塞入最新消息的 newContent, newRichContent
-            // console.log(`newContent: ${newContent}`)
-            message.contents.push(newContent)
-            message.richContents.push(newRichContent)
-            message.repeatedThread.push(1)
-  
-            message.threadLength++
-            res = true
-            return false
-          }
-        })
-        
-        
-        return res
-      },
-      mergeSimilarGift(authorName, price, giftName, num) {
-        let res = false
-        this.forEachRecentMessage(5, message => {
-          if (message.type === constants.MESSAGE_TYPE_GIFT
-              && message.authorName === authorName
-              && message.giftName === giftName
-          ) {
-            message.price += price
-            message.num += num
-            res = true
-            return false
-          }
-          return true
-        })
-        return res
       },
       forEachRecentMessage(num, callback) {
         // 从新到老遍历num条消息
@@ -494,24 +466,19 @@ function(_, constants, TextMessage, PaidMessage, MembershipItem, Ticker, Interac
       },
       //* 处理新信息的消息入栈
       handleAddMessage(message) {
-        message = {
-          ...message,
-          addTime: new Date() // 添加一个本地时间给Ticker用，防止本地时间和服务器时间相差很大的情况
-        }
-        //* 判断是否要加入到弹幕队列，如果是打赏但价格低于最低打赏价格则不加入
-        if (message.price == undefined || message.price >= this.minGiftPrice) {
-          this.messagesBuffer.push(message)
-        }
-  
-        //* 判断礼物和醒目留言(sc)是否要加入到顶部固定贴纸，如果小于最低ticker价格就不加入
-        if (message.price != undefined && message.price >= this.minTickerPrice) {
-          // unshift() push message 到 front
-          this.paidMessages.unshift(message)
+        // 添加一个本地时间给Ticker用，防止本地时间和服务器时间相差很大的情况
+        message.addTime = new Date()
+
+        if (message.type !== constants.MESSAGE_TYPE_TEXT) {
+          this.paidMessages.unshift(_.cloneDeep(message))
           const MAX_PAID_MESSAGE_NUM = 100
           if (this.paidMessages.length > MAX_PAID_MESSAGE_NUM) {
             this.paidMessages.splice(MAX_PAID_MESSAGE_NUM, this.paidMessages.length - MAX_PAID_MESSAGE_NUM)
           }
         }
+
+        // 不知道cloneDeep拷贝Vue的响应式对象会不会有问题，保险起见把这句放在后面
+        this.messagesBuffer.push(message)
       },
       handleDelMessage({ id }) {
         for (let arr of [this.messages, this.paidMessages, this.messagesBuffer]) {
@@ -600,9 +567,6 @@ function(_, constants, TextMessage, PaidMessage, MembershipItem, Ticker, Interac
         this.preinsertHeight = this.$refs.items.clientHeight
       },
       showNewMessages() {
-        if (this.randomXOffset || this.randomYOffset) {
-          return
-        }
         let hasScrollBar = this.$refs.items.clientHeight > this.$refs.scroller.clientHeight
         
         this.$refs.itemOffset.style.height = `${this.$refs.items.clientHeight}px`
@@ -710,24 +674,7 @@ function(_, constants, TextMessage, PaidMessage, MembershipItem, Ticker, Interac
           this.cantScrollStartTime = new Date()
         }
       },
-      setCustomCss() {
-        // check if custom css already exists
-        let customCss = document.querySelector('#custom-css')
-        if (customCss) {
-          customCss.href = this.customCss
-          if (this.customCss === '') {
-            customCss.remove()
-          }
-        } else {
-          // create custom css, add to yt-live-chat-renderer
-          let link = document.createElement('link')
-          link.id = 'custom-css'
-          link.rel = 'stylesheet'
-          link.href = this.customCss
-          document.head.appendChild(link)
-        }
-      }
-    },
+    }
   }
   return exports
 }))

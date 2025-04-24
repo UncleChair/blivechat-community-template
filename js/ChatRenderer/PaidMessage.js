@@ -16,15 +16,17 @@ function(constants, ImgShadow) {
   exports.default = {
     template: `
   <yt-live-chat-paid-message-renderer class="style-scope yt-live-chat-item-list-renderer" allow-animations
-    :show-only-header="!content" :style="{
-      '--yt-live-chat-paid-message-primary-color': color.contentBg,
-      '--yt-live-chat-paid-message-secondary-color': color.headerBg,
-      '--yt-live-chat-paid-message-header-color': color.header,
-      '--yt-live-chat-paid-message-author-name-color': color.authorName,
-      '--yt-live-chat-paid-message-timestamp-color': color.time,
-      '--yt-live-chat-paid-message-color': color.content
+    :show-only-header="priceText == '银瓜子礼物'" :style="{
+      '--yt-live-chat-paid-message-secondary-color': priceRange.colors.headerBg,
+      '--yt-live-chat-paid-message-primary-color': priceRange.colors.contentBg,
+      '--yt-live-chat-paid-message-divider-color': priceRange.colors.dividerColor,
+      '--yt-live-chat-paid-message-header-color': priceRange.colors.header,
+      '--yt-live-chat-paid-message-author-name-color': priceRange.colors.authorName,
+      '--yt-live-chat-paid-message-timestamp-color': priceRange.colors.time,
+      '--yt-live-chat-paid-message-color': priceRange.colors.content
     }"
-    :blc-price-level="priceConfig.priceLevel"
+    :giftName="giftName" :price="price" :price-level="priceRange.price"
+    :is-deleted="isDelete"
   >
     <div id="card" class="style-scope yt-live-chat-paid-message-renderer">
       <div id="header" class="style-scope yt-live-chat-paid-message-renderer">
@@ -33,8 +35,8 @@ function(constants, ImgShadow) {
         ></img-shadow>
         <div id="header-content" class="style-scope yt-live-chat-paid-message-renderer">
           <div id="header-content-primary-column" class="style-scope yt-live-chat-paid-message-renderer">
-            <div id="author-name" class="style-scope yt-live-chat-paid-message-renderer">{{ authorName }}</div>
-            <div id="purchase-amount" class="style-scope yt-live-chat-paid-message-renderer">{{ showPriceText }}</div>
+            <div id="author-name" class="style-scope yt-live-chat-paid-message-renderer">{{authorName}}</div>
+            <div id="purchase-amount" class="style-scope yt-live-chat-paid-message-renderer">{{priceText == '银瓜子礼物'? content : priceText}}</div>
           </div>
           <span id="timestamp" class="style-scope yt-live-chat-paid-message-renderer">{{ timeText }}</span>
         </div>
@@ -53,7 +55,7 @@ function(constants, ImgShadow) {
       avatarUrl: String,
       authorName: String,
       giftName: String,
-      price: Number, // 价格，人民币
+      price: Number,
       time: Date,
       content: String,
       isDelete: Boolean
@@ -63,7 +65,7 @@ function(constants, ImgShadow) {
         return constants.getPriceConfig(this.price)
       },
       priceText() {
-        let price_str = this.price > 0 ? `CN¥${utils.formatCurrency(this.price)}` : '银瓜子礼物'
+        let price_str = this.price > 0 ? `CN¥${constants.formatCurrency(this.price)}` : '银瓜子礼物'
         return price_str
       },
       timeText() {

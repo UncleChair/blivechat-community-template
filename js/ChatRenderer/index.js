@@ -138,24 +138,24 @@ function(_, constants, TextMessage, PaidMessage, MembershipItem, Ticker, Interac
       PaidMessage
     },
     props: {
-      showGiftName: {
-        type: Boolean,
-      },
-      minGiftPrice: {
-        type: Number,
-      },
-      minTickerPrice: {
-        type: Number,
-      },
       maxNumber: {
         type: Number,
       },
-      pinTime: {
-        type: Number,
+      showGiftName: {
+        type: Boolean,
       },
+      mergeGift: {
+        type: Boolean,
+      },
+      mergeSimilarDanmaku: {
+        type: Boolean,
+      },
+
+      // Kuma version value, can not be used outside now
       fadeOutNum: {
         type: Number,
-      }
+        default: 0,
+      },
     },
     data() {
       return {

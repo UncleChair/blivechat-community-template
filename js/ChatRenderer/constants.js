@@ -13,6 +13,9 @@ function(blcsdk) {
   exports.INTERACT_TYPE_SHARE = 3
   exports.INTERACT_TYPE_SPECIAL_FOLLOW = 4
 
+  exports.CONTENT_PART_TYPE_TEXT = blcsdk.ContentPartType.TEXT
+  exports.CONTENT_PART_TYPE_IMAGE = blcsdk.ContentPartType.IMAGE
+
   const AUTHOR_TYPE_TO_TEXT = []
   AUTHOR_TYPE_TO_TEXT[blcsdk.AuthorType.NORMAL] = ''
   AUTHOR_TYPE_TO_TEXT[blcsdk.AuthorType.MEMBER] = 'member' // 舰队

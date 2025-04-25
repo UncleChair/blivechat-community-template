@@ -6,6 +6,7 @@
 
 ## 安装
 
+### 本地安装
 __⚠注意⚠ 本项目基于BliveChat自定义HTML功能，请确保您将使用v1.10版本以上的BliveChat__
 
 1. 找到 `BliveChat` 文件夹位置并打开目录 `data\custom_public\templates`
@@ -24,6 +25,13 @@ __⚠注意⚠ 本项目基于BliveChat自定义HTML功能，请确保您将使�
 将无法解析模板
 
 3. 启动`BliveChat`主程序，在`首页`的`自定义HTML模板`中可以找到 `blivechat-community`模板，选中后即可使用
+
+### 在线链接
+
+https://unclechair.vip/blivedom/
+将该链接复制到自定义html模板中的模板URL即可使用
+
+__⚠注意⚠ 本链接不保证可用性，如果发现不能使用请直接改为之前的本地安装方法__
 
 ## 注意事项
 

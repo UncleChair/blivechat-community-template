@@ -33,6 +33,10 @@ https://unclechair.vip/blivedom/
 
 __⚠注意⚠ 本链接不保证可用性，如果发现不能使用请直接改为之前的本地安装方法__
 
+## 使用
+
+Blivechat v1.10.1 新增[支持OBS中的自定义CSS](https://github.com/xfgryujk/blivechat/wiki/%E8%87%AA%E5%AE%9A%E4%B9%89HTML%E6%A8%A1%E6%9D%BF#%E6%94%AF%E6%8C%81obs%E4%B8%AD%E7%9A%84%E8%87%AA%E5%AE%9A%E4%B9%89css)
+
 ## 注意事项
 
 本项目包含绝大部分的只熊版样式和DOM结构，但可能在细微的地方有所差别，并且不支持只熊版的以下功能：

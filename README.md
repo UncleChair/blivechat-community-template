@@ -7,7 +7,7 @@
 ## 安装
 
 ### 本地安装
-__⚠注意⚠ 本项目基于BliveChat自定义HTML功能，请确保您将使用v1.10版本以上的BliveChat__
+__⚠注意⚠ 本项目基于BliveChat自定义HTML功能，请确保您将使用v1.10.1版本以上的BliveChat__
 
 1. 找到 `BliveChat` 文件夹位置并打开目录 `data\custom_public\templates`
 2. 下载并将本项目文件解压至上面开启的文件夹
